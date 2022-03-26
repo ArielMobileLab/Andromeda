@@ -10,4 +10,4 @@ setuptools.setup(
     url='https://github.com/ArielMobileLab/Andromeda',
     license='MIT',
     packages=['Andromeda'],
-    install_requires=['numpy'],
+    install_requires=['numpy'])
