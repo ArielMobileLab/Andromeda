@@ -3,7 +3,7 @@ from setuptools import setup
 setup(
     # Needed to silence warnings (and to be a worthwhile package)
     name='Andromeda',
-    url='https://https://github.com/ArielMobileLab/andromeda',
+    url='https://github.com/ArielMobileLab/Andromeda.git',
     author='Oren Musicant',
     author_email='musicant.oren@gmail.com',
     # Needed to actually package something
