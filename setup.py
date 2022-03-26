@@ -1,20 +1,16 @@
-from setuptools import setup
+import setuptools
 
-setup(
-    # Needed to silence warnings (and to be a worthwhile package)
+with open("README.md", "r", encoding="utf-8") as fh:
+    long_description = fh.read()
+
+setuptools.setup(
     name='Andromeda',
-    url='https://github.com/ArielMobileLab/Andromeda.git',
+    version='0.0.1',
     author='Oren Musicant',
     author_email='musicant.oren@gmail.com',
-    # Needed to actually package something
-    packages=['Andromeda'],
-    # Needed for dependencies
-    install_requires=['numpy'],
-    # *strongly* suggested for sharing
-    version='0.1',
-    # The license can be anything you like
+
+    description='Handy functions to handle simulation and physiological data',
+    url=''https://github.com/ArielMobileLab/Andromeda',
     license='MIT',
-    description='Handy function to handle simulation and physiological data',
-    # We will also need a readme eventually (there will be a warning)
-    # long_description=open('README.txt').read(),
-)
+    packages=['Andromeda'],
+    install_requires=['numpy'],
