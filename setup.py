@@ -17,4 +17,5 @@ setup(
     description='Handy function to handle simulation and physiological data',
     # We will also need a readme eventually (there will be a warning)
     # long_description=open('README.txt').read(),
+    download_url='https://github.com/ArielMobileLab/Andromeda.git'
 )
