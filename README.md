@@ -1,2 +1,2 @@
 # andromeda
-handytools to process simulator and physiological files
+Handy tools to process simulator and physiological data
