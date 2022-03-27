@@ -7,6 +7,6 @@ setup(
     author_email='musicant.oren@gmail.com',
 
     description='Handy functions to handle simulation and physiological data',
-    url='https://github.com/ArielMobileLab/Andromeda',
+    url='https://github.com/ArielMobileLab/tidytools',
     license='MIT',
     packages=['Andromeda'])
