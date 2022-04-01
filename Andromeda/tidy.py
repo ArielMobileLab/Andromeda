@@ -140,6 +140,7 @@ def tidy_engine(path):
 ### miscellaneous 
         df_wide['CumulativeDistanceToLead']=None    ## currently we don't need the Distance_Driven the columns is added for
         df_wide['CumulativeDistanceToLeadPWR2']=None 
+
 ### Merge outer join
         df_wide = pd.merge(df_wide, Termination, on='SimulationTime', how='outer')
 
@@ -244,7 +245,9 @@ def tidy_teleoperation(path):
             'SimulationTime':   [min(df['SimulationTime'])], 
             'Reason'        :   ['Start Simulation']})
         Termination=Termination.append(Begining)
-
+### miscellaneous 
+        df['CumulativeDistanceToLead']=None    ## currently we don't need the Distance_Driven the columns is added for
+        df['CumulativeDistanceToLeadPWR2']=None 
         df = pd.merge(df, Termination, on='SimulationTime', how='outer')
 
     return df
