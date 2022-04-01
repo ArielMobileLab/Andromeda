@@ -139,6 +139,7 @@ def tidy_engine(path):
         
 ### miscellaneous 
         df_wide['CumulativeDistanceToLead']=None    ## currently we don't need the Distance_Driven the columns is added for
+        df_wide['CumulativeDistanceToLeadPWR2']=None 
 ### Merge outer join
         df_wide = pd.merge(df_wide, Termination, on='SimulationTime', how='outer')
 
@@ -184,7 +185,8 @@ def tidy_gps(path):  # load json to gsp df
         df['CumulativeSpeed']=None    ## currently we don't need the Distance_Driven the columns is added for
         df['Samples']=None    ## currently we don't need the Distance_Driven the columns is added for
         df['CumulativeSpeedPWR2']=None    ## currently we don't need the Distance_Driven the columns is added for
-     
+        df['CumulativeDistanceToLead']=None    ## currently we don't need the Distance_Driven the columns is added for
+        df['CumulativeDistanceToLeadPWR2']=None 
         df = pd.merge(df, Termination, on='SimulationTime', how='outer')
 
     except:
