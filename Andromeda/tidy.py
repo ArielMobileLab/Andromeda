@@ -137,9 +137,6 @@ def tidy_engine(path):
             'Reason'        :   ['Start']})
         Termination=Termination.append(Begining)
         
-### miscellaneous 
-        df_wide['CumulativeDistanceToLead']=None    ## currently we don't need the Distance_Driven the columns is added for
-        df_wide['CumulativeDistanceToLeadPWR2']=None 
 
 ### Merge outer join
         df_wide = pd.merge(df_wide, Termination, on='SimulationTime', how='outer')
