@@ -52,11 +52,13 @@ def tidy_cognata(path):
     else:
         Termination=pd.DataFrame({
             'SimulationTime':   [max(df['SimulationTime'])], 
+            'RealTime':         [max(df['RealTime'])], 
             'Reason'        :   ['No termination data']})
 
     ### Begining
     Begining=pd.DataFrame({
                 'SimulationTime':   [min(df['SimulationTime'])], 
+                'RealTime':         [min(df['RealTime'])], 
                 'Reason'        :   ['Start']})
     Termination=Termination.append(Begining)
                 
@@ -124,16 +126,18 @@ def tidy_engine(path):
 ### Termination
         Termination=df[df.Type=='Termination']
         if len(Termination)>0:
-             Termination=Termination[['SimulationTime','Reason']]
+             Termination=Termination[['SimulationTime','RealTime','Reason']]
             #Termination=Termination.drop(['Type', 'WorldTime', 'FrameID','Speed','Distance_Driven'], axis=1)
         else:
             Termination=pd.DataFrame({
                     'SimulationTime':   [max(GPS['SimulationTime'])], 
+                    'RealTime':   [max(GPS['RealTime'])], 
                     'Reason'        :   ['No termination data']})
 
 ### Begining
         Begining=pd.DataFrame({
             'SimulationTime':   [min(GPS['SimulationTime'])], 
+            'RealTime':   [min(GPS['RealTime'])], 
             'Reason'        :   ['Start']})
         Termination=Termination.append(Begining)
         
@@ -173,11 +177,13 @@ def tidy_gps(path):  # load json to gsp df
         ### Termination
         Termination=pd.DataFrame({
             'SimulationTime':   [max(df['SimulationTime'])], 
+            'RealTime':         [max(df['RealTime'])], 
             'Reason'        :   ['No termination data']})
 
 ### Begining
         Begining=pd.DataFrame({
             'SimulationTime':   [min(df['SimulationTime'])], 
+            'RealTime':         [min(df['RealTime'])], 
             'Reason'        :   ['Start Simulation']})
         Termination=Termination.append(Begining)
 
@@ -238,11 +244,13 @@ def tidy_teleoperation(path):
                 ### Termination
         Termination=pd.DataFrame({
             'SimulationTime':   [max(df['SimulationTime'])], 
+            'RealTime':         [max(df['RealTime'])], 
             'Reason'        :   ['No termination data']})
 
 ### Begining
         Begining=pd.DataFrame({
             'SimulationTime':   [min(df['SimulationTime'])], 
+            'RealTime':         [min(df['RealTime'])], 
             'Reason'        :   ['Start Simulation']})
         Termination=Termination.append(Begining)
 ### miscellaneous 
