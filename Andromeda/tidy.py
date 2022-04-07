@@ -152,6 +152,20 @@ def tidy_gps(path):  # load json to gsp df
         df = pd.DataFrame.from_dict(df, orient='columns')
         df = df[df['Name'].isin(['Lead Vehicle', 'lead car'])].reset_index()     
         
+        df["ForwaredAcceleration"]=999.99
+        df["LateralAcceleration"]=999.99
+        df["UpwardAcceleration"]=999.99
+        for i in np.arange(len(df.Acceleration)):     
+           df["ForwaredAcceleration"].iloc[i]=float(df.Acceleration.iloc[i] ['x'])
+           df["LateralAcceleration"].iloc[i]=float(df.Acceleration.iloc[i] ['y'])
+           df["UpwardAcceleration"].iloc[i]=float(df.Acceleration.iloc[i] ['z'])
+       
+       # The filtered acceleration while later be used to identify kinematic events
+        df["ForwaredAcceleration"]=filter_acceleration(df["ForwaredAcceleration"])
+        df["LateralAcceleration"]=filter_acceleration(df["LateralAcceleration"])
+        df["UpwardAcceleration"]=filter_acceleration(df["UpwardAcceleration"])
+       
+        df=df.reset_index()
         df["RealTime"] = " "
         fixedTime = df.WorldTime[0]
         fixedTime2 = fixedTime[0:15]
@@ -165,7 +179,7 @@ def tidy_gps(path):  # load json to gsp df
             deltasec = delta.total_seconds()
             df.RealTime[x] = deltasec
             
-        df = df[['SimulationTime', 'Latitude', 'Longitude','RealTime','WorldTime','Speed']] 
+        df = df[['SimulationTime', 'Latitude', 'Longitude','RealTime','WorldTime','Speed','ForwaredAcceleration','LateralAcceleration']] 
         
         ### Termination
         Termination=pd.DataFrame({
