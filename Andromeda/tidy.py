@@ -167,6 +167,7 @@ def tidy_gps(path):  # load json to gsp df
        
         df=df.reset_index()
         df["RealTime"] = " "
+        df["Distance_Driven"]=Distance_Driven_haversine(df['Latitude'],df['Longitude'])
         fixedTime = df.WorldTime[0]
         fixedTime2 = fixedTime[0:15]
         fixedTime3 = datetime.strptime(fixedTime2, "%H:%M:%S.%f")
