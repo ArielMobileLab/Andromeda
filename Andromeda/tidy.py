@@ -318,8 +318,8 @@ def findpeaks(x,thresh=0.2):
 ## The data must have the columns: lng & lat
 def distance_to_point(data,point_lat,point_lng, dist_function="haversine"):
     if dist_function=="haversine":
-        loc1=(point_lng,point_lat)
-        loc2=(data['lng'],data['lat']) 
+        loc1=(point_lat,point_lng)
+        loc2=(data['lat'],data['lng']) 
         rep=hs.haversine(loc1,loc2,unit='m')
     else:
         rep=((data['lng']-point_lng)**2+(data['lat']-point_lat)**2)**0.5
