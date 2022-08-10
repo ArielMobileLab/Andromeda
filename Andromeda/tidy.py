@@ -19,11 +19,12 @@ def Distance_Driven_haversine(Latitude,Longitude):
     n=len(Latitude)
     Distance_Driven = [0] * n
     for i in np.arange(n-1):
-        loc1=(Longitude[i],Latitude[i])
-        loc2=(Longitude[i+1],Latitude[i+1])
+        loc1=(Latitude[i],Longitude[i])
+        loc2=(Latitude[i+1],Longitude[i+1])
         Distance_Driven[i+1] = hs.haversine(loc1,loc2,unit='m')
     Distance_Driven = np.cumsum(Distance_Driven)
     return Distance_Driven
+
    
 def tidy_cognata(path):
     df=pd.read_json(path)
