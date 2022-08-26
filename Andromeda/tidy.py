@@ -151,7 +151,7 @@ def tidy_gps(path):  # load json to gsp df
         df = pd.read_json(path)   
         df = pd.DataFrame(df['Logs'].values.tolist()).join(df.drop('Logs', 1))
         df = pd.DataFrame.from_dict(df, orient='columns')
-        df = df[df['Name'].isin(['Lead Vehicle', 'lead car'])].reset_index()     
+        df = df[df['Name'].isin(['Lead Vehicle', 'lead car','carinfront'])].reset_index()     
         
         df["ForwaredAcceleration"]=999.99
         df["LateralAcceleration"]=999.99
