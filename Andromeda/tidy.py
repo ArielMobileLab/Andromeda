@@ -181,7 +181,7 @@ def tidy_gps(path):  # load json to gsp df
             deltasec = delta.total_seconds()
             df.RealTime[x] = deltasec
             
-        df = df[['SimulationTime', 'Latitude', 'Longitude','RealTime','WorldTime','Speed','ForwaredAcceleration','LateralAcceleration']] 
+        df = df[['SimulationTime', 'Latitude', 'Longitude','RealTime','WorldTime','Speed','ForwaredAcceleration','LateralAcceleration','Name']] 
         
         ### Termination
         Termination=pd.DataFrame({
