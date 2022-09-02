@@ -15,7 +15,7 @@ def filter_acceleration(x):
     x=x-statistics.median(x)
     return x
 
-def Distance_Driven_haversine(Latitude,Longitude):
+def Distance_Driven_haversine(Latitude,Longitude,):
     n=len(Latitude)
     Distance_Driven = [0] * n
     for i in np.arange(n-1):
@@ -24,6 +24,20 @@ def Distance_Driven_haversine(Latitude,Longitude):
         Distance_Driven[i+1] = hs.haversine(loc1,loc2,unit='m')
     Distance_Driven = np.cumsum(Distance_Driven)
     return Distance_Driven
+
+#Calculate the distance (in different units) between two points on the earth using their latitude and longitude.
+def distanceHaversinePoints(p1_lat,p1_lng,p2_lat,p2_lng):
+    loc1=(p1_lat,p1_lng)
+    loc2=(p2_lat,p2_lng)
+    return hs.haversine(loc1,loc2,unit='m')
+    
+            
+def distanceHaversineVectors(p1_lat,p1_lng,p2_lat,p2_lng):
+    distance=[]
+    for i in np.arange(len(p1_lat)):
+        dis=distanceHaversinePoints(p1_lat[i],p1_lng[i],p2_lat[i],p2_lng[i])
+        distance.append(dis)
+    return distance
 
    
 def tidy_cognata(path):
