@@ -346,6 +346,8 @@ def find_the_time_most_reasnable_for_point(lat,lng,time,point_lat,point_lng,dist
     if np.sum(v)==0:
         return None
     df=df[v]
+    if (df.time.max()-df.time.min())>30: ## more than 30 seconds in the event is not reasnable when driving.
+        return None
     df.insert(0,'distance',df.apply(distance_to_point,args=(point_lat,point_lng,distance_function),axis=1))
     estimated_time=np.average(df.time, weights=1/pow(df.distance,4))
     return estimated_time
