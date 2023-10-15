@@ -155,7 +155,7 @@ def tidy_engine(path):
 
 ### Merge outer join
         df_wide = pd.merge(df_wide, Termination, on='SimulationTime', how='outer')
-
+        df_wide = df_wide[df_wide['FrameID'].isna()==False]
     except:
         return None
     return df_wide
