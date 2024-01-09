@@ -209,7 +209,7 @@ def tidy_gps(path):  # load json to gsp df
         Termination=Termination.append(Begining)
 
 ### miscellaneous 
-        df['Distance_Driven']=None    ## currently we don't need the Distance_Driven the columns is added for
+     #   df['Distance_Driven']=None    ## currently we don't need the Distance_Driven the columns is added for
         df['CumulativeSpeed']=None    ## currently we don't need the Distance_Driven the columns is added for
         df['Samples']=None    ## currently we don't need the Distance_Driven the columns is added for
         df['CumulativeSpeedPWR2']=None    ## currently we don't need the Distance_Driven the columns is added for
