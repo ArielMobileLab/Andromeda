@@ -195,7 +195,7 @@ def tidy_gps(path):  # load json to gsp df
             deltasec = delta.total_seconds()
             df.RealTime[x] = deltasec
             
-        df = df[['SimulationTime', 'Latitude', 'Longitude','RealTime','WorldTime','Speed','ForwaredAcceleration','LateralAcceleration','Name']] 
+        df = df[['SimulationTime', 'Latitude', 'Longitude','RealTime','WorldTime','Speed','ForwaredAcceleration','LateralAcceleration','Name','Distance_Driven']] 
         
         ### Termination
         Termination=pd.DataFrame({
@@ -368,7 +368,7 @@ def find_the_time_most_reasnable_for_point_v2(lat,lng,time,point_lat,point_lng,e
     a=a.transpose()
     df = pd.DataFrame(a,columns=columns) 
     df.insert(0,'distance',df.apply(distance_to_point,args=(point_lat,point_lng,distance_function),axis=1))
-    picks=findpeaks(1/df.distance,thresh=1/5.5) ##1/devided by threshoold distance so short distance will translate to a large number
+    picks=findpeaks(1/df.distance,thresh=1/5.5) ##1/devided by threshold distance so short distance will translate to a large number
     picks=pd.DataFrame(picks)
     if len(picks)>=event_number:
         picks=picks.loc[event_number-1]
