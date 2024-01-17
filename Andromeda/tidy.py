@@ -287,7 +287,8 @@ def tidy_carla(path):
         # df=pd.DataFrame.from_dict(df, orient='columns')
         df = df.rename(columns={"Reson": "Reason"})
         df = df.rename(columns={"Simulation_time": "SimulationTime"})
-        df["WorldTime"]=df["Timestamp"].str.slice(11,19)
+        df["WorldTime"]=df["Timestamp"].astype(str).str.slice(11,19)
+
 
 ### GPS messages
         GPS=df[df.Type=="Ego car Sensors:"]
