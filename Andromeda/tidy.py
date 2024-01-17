@@ -278,7 +278,56 @@ def tidy_teleoperation(path):
         df = pd.merge(df, Termination, on='SimulationTime', how='outer')
 
     return df
+def tidy_carla(path):
+    #path=r'H:\My Drive\Ariel Uni\B5_580571\Simulation\5.AVATAR\Color\EgoCar_Color_2024-01-16_15-33-54.json'
+    try:
+        #path=r"G:\My Drive\Ariel Uni\A1_012594\Simulator\4.Latency\Latency3\7081(11 20 29)-CognataEngineLog (9).JSON"
+        df=pd.read_json(path, lines=True)
+        # df = (pd.DataFrame(df['Logs'].values.tolist()).join(df.drop('Logs', 1)))
+        # df=pd.DataFrame.from_dict(df, orient='columns')
+        df = df.rename(columns={"Reson": "Reason"})
+        df = df.rename(columns={"Simulation_time": "SimulationTime"})
+### GPS messages
+        GPS=df[df.Type=="Ego car Sensors:"]
+        GPS=GPS.dropna(axis=1, how='all')
+        GPS=GPS.drop(['Type'], axis=1)
+        GPS["ForwaredAcceleration"]=999.99
+        GPS["LateralAcceleration"]=999.99
+        GPS["UpwardAcceleration"]=999.99
+        GPS["ForwaredAcceleration"]=GPS.Acceleration_x
+        GPS["LateralAcceleration"]=GPS.Acceleration_y
+        GPS["UpwardAcceleration"]=GPS.Acceleration_z    
+        # The filtered acceleration while later be used to identify kinematic events
+        GPS["ForwaredAcceleration"]=filter_acceleration(GPS["ForwaredAcceleration"])
+        GPS["LateralAcceleration"]=filter_acceleration(GPS["LateralAcceleration"])
+        GPS["UpwardAcceleration"]=filter_acceleration(GPS["UpwardAcceleration"])
+        
+        GPS=GPS.reset_index()
+        GPS["RealTime"] = df["SimulationTime"]
+        GPS["Distance_Driven"]=Distance_Driven_haversine(GPS['Latitude'],GPS['Longitude'])
+        GPS['CumulativeSpeed']=np.cumsum(GPS.Speed)
+        GPS['CumulativeSpeedPWR2']=np.cumsum(GPS.Speed**2)
+        GPS['Samples']=np.arange(len(GPS))+1
+        GPS["Longitudinal_Acceleration"]=GPS["ForwaredAcceleration"]
+### Termination
+        Termination=df[df.Type=='Termination:']
+        if len(Termination)==0:   
+            Termination=pd.DataFrame({
+                    'SimulationTime':   [max(GPS['SimulationTime'])], 
+                    'Reason'        :   ['No termination data']})
+        Termination=Termination[['SimulationTime','Reason']]
 
+### Begining
+        Begining=pd.DataFrame({
+            'SimulationTime':   [min(GPS['SimulationTime'])], 
+            'Reason'        :   ['Start']})
+        Termination=Termination.append(Begining)
+        
+### Merge outer join
+        df = pd.merge(GPS, Termination, on='SimulationTime', how='outer')
+    except:
+        return None
+    return df
 # =============================================================================
 # Internals
 # =============================================================================
