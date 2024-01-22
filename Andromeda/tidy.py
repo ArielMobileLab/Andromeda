@@ -59,7 +59,7 @@ def tidy_cognata(path):
             currentTime3 = datetime.strptime(currentTime2+".0", "%H:%M:%S.%f")
         delta = currentTime3 - fixedTime3
         deltasec = delta.total_seconds()
-        df.RealTime[x] = deltasec
+        #df.RealTime[x] = deltasec
     ### Termination
     Termination=df[df.Type=='Termination']
     if len(Termination)>0:
