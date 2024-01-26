@@ -82,7 +82,7 @@ def tidy_cognata(path):
          
 def tidy_engine(path):
     try:
-        #path=r'H:\My Drive\Ariel Uni\B6_587175\Simulation\5.AVATAR\Color\EgoCar_Color_2024-01-25_14-38-11.json'
+        #path=r'H:\My Drive\Ariel Uni\B6_587175\Simulation\5.AVATAR\Familiar_Face\EgoCar_Face_Familiar_2024-01-25_14-44-57.json'
       
         df=pd.read_json(path)
         df = (pd.DataFrame(df['Logs'].values.tolist()).join(df.drop('Logs', 1)))
@@ -95,10 +95,13 @@ def tidy_engine(path):
         GPS["ForwaredAcceleration"]=999.99
         GPS["LateralAcceleration"]=999.99
         GPS["UpwardAcceleration"]=999.99
+        GPS["ForwaredAccelerationRow"]=999.99
+        GPS["LateralAccelerationRow"]=999.99
+        GPS["UpwardAccelerationRow"]=999.99
         for i in np.arange(len(GPS.Acceleration)):     
-            GPS["ForwaredAcceleration"].iloc[i]=float(GPS.Acceleration.iloc[i] ['x'])
-            GPS["LateralAcceleration"].iloc[i]=float(GPS.Acceleration.iloc[i] ['y'])
-            GPS["UpwardAcceleration"].iloc[i]=float(GPS.Acceleration.iloc[i] ['z'])
+            GPS["ForwaredAccelerationRow"].iloc[i]=GPS["ForwaredAcceleration"].iloc[i]=float(GPS.Acceleration.iloc[i] ['x'])
+            GPS["LateralAccelerationRow"].iloc[i]=GPS["LateralAcceleration"].iloc[i]=float(GPS.Acceleration.iloc[i] ['y'])
+            GPS["UpwardAccelerationRow"].iloc[i]=GPS["UpwardAcceleration"].iloc[i]=float(GPS.Acceleration.iloc[i] ['z'])
         
         # The filtered acceleration while later be used to identify kinematic events
         GPS["ForwaredAcceleration"]=filter_acceleration(GPS["ForwaredAcceleration"])
