@@ -82,7 +82,8 @@ def tidy_cognata(path):
          
 def tidy_engine(path):
     try:
-        #path=r"G:\My Drive\Ariel Uni\A1_012594\Simulator\4.Latency\Latency3\7081(11 20 29)-CognataEngineLog (9).JSON"
+        #path=r'H:\My Drive\Ariel Uni\B6_587175\Simulation\5.AVATAR\Color\EgoCar_Color_2024-01-25_14-38-11.json'
+      
         df=pd.read_json(path)
         df = (pd.DataFrame(df['Logs'].values.tolist()).join(df.drop('Logs', 1)))
         df=pd.DataFrame.from_dict(df, orient='columns')
@@ -130,12 +131,16 @@ def tidy_engine(path):
         GPS['Samples']=np.arange(len(GPS))+1
 
 ### CarTelemetries messages
-        CarTelemetries=df[df.Type=='CarTelemetries']
-        CarTelemetries=CarTelemetries.dropna(axis=1, how='all')
-        CarTelemetries.Acceleration=pd.to_numeric(CarTelemetries.Acceleration)
-        CarTelemetries["Longitudinal_Acceleration"]=pd.to_numeric(CarTelemetries.Acceleration)
-        CarTelemetries=CarTelemetries.drop(['Type', 'WorldTime', 'FrameID', 'Speed','Acceleration'], axis=1)
-        df_wide = pd.merge(GPS, CarTelemetries, on='SimulationTime', how='outer')
+        if (sum(df.Type=='CarTelemetries')):
+            CarTelemetries=df[df.Type=='CarTelemetries']
+            CarTelemetries=CarTelemetries.dropna(axis=1, how='all')
+            CarTelemetries.Acceleration=pd.to_numeric(CarTelemetries.Acceleration)
+            CarTelemetries["Longitudinal_Acceleration"]=pd.to_numeric(CarTelemetries.Acceleration)
+            thisFilter = CarTelemetries.filter(['Type', 'WorldTime', 'FrameID', 'Speed','Acceleration'])
+            CarTelemetries=CarTelemetries.drop(thisFilter, axis=1,errors='ignore')
+            df_wide = pd.merge(GPS, CarTelemetries, on='SimulationTime', how='outer')
+        else:
+            df_wide=GPS
 ### Termination
         Termination=df[df.Type=='Termination']
         if len(Termination)>0:
@@ -159,6 +164,7 @@ def tidy_engine(path):
     except:
         return None
     return df_wide
+    
 
 def tidy_gps(path):  # load json to gsp df
     try:
