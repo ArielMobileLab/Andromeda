@@ -100,7 +100,7 @@ def tidy_engine(path):
         GPS["UpwardAccelerationRow"]=999.99
         GPS["ForwaredAccelerationFilter"]=999.99
         for i in np.arange(len(GPS.Acceleration)):     
-            GPS["ForwaredAccelerationFilter"]=GPS["ForwaredAccelerationRow"].iloc[i]=GPS["ForwaredAcceleration"].iloc[i]=float(GPS.Acceleration.iloc[i] ['x'])
+            GPS["ForwaredAccelerationFilter"].iloc[i]=GPS["ForwaredAccelerationRow"].iloc[i]=GPS["ForwaredAcceleration"].iloc[i]=float(GPS.Acceleration.iloc[i] ['x'])
             GPS["LateralAccelerationRow"].iloc[i]=GPS["LateralAcceleration"].iloc[i]=float(GPS.Acceleration.iloc[i] ['y'])
             GPS["UpwardAccelerationRow"].iloc[i]=GPS["UpwardAcceleration"].iloc[i]=float(GPS.Acceleration.iloc[i] ['z'])
         
