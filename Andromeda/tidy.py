@@ -98,9 +98,9 @@ def tidy_engine(path):
         GPS["ForwaredAccelerationRow"]=999.99
         GPS["LateralAccelerationRow"]=999.99
         GPS["UpwardAccelerationRow"]=999.99
-        GPS["ForwaredAccelerationRowFilter"]=999.99
+        GPS["ForwaredAccelerationFilter"]=999.99
         for i in np.arange(len(GPS.Acceleration)):     
-            GPS["ForwaredAccelerationRowFilter"]=GPS["ForwaredAccelerationRow"].iloc[i]=GPS["ForwaredAcceleration"].iloc[i]=float(GPS.Acceleration.iloc[i] ['x'])
+            GPS["ForwaredAccelerationFilter"]=GPS["ForwaredAccelerationRow"].iloc[i]=GPS["ForwaredAcceleration"].iloc[i]=float(GPS.Acceleration.iloc[i] ['x'])
             GPS["LateralAccelerationRow"].iloc[i]=GPS["LateralAcceleration"].iloc[i]=float(GPS.Acceleration.iloc[i] ['y'])
             GPS["UpwardAccelerationRow"].iloc[i]=GPS["UpwardAcceleration"].iloc[i]=float(GPS.Acceleration.iloc[i] ['z'])
         
@@ -158,8 +158,8 @@ def tidy_engine(path):
         if ("Gear" in df_wide.columns and sum(df_wide["Gear"])>0):              
                GearChangeFrames=df_wide.loc[df_wide.Gear.diff().isin([-2,-1]),'FrameID']
                for f in GearChangeFrames: 
-                   df_wide.loc[(df_wide.FrameID>=f) & (df_wide.FrameID<=f+50),"ForwaredAccelerationRowFilter"]=np.NAN        
-               df_wide["ForwaredAccelerationRowFilter"]=df_wide["ForwaredAccelerationRowFilter"].interpolate(method='linear')
+                   df_wide.loc[(df_wide.FrameID>=f) & (df_wide.FrameID<=f+50),"ForwaredAccelerationFilter"]=np.NAN        
+               df_wide["ForwaredAccelerationFilter"]=df_wide["ForwaredAccelerationFilter"].interpolate(method='linear')
    
         
         df_wide["ForwaredAcceleration"]=filter_acceleration(df_wide["ForwaredAccelerationRowFilter"])
