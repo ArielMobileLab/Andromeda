@@ -98,15 +98,16 @@ def tidy_engine(path):
         GPS["ForwaredAccelerationRow"]=999.99
         GPS["LateralAccelerationRow"]=999.99
         GPS["UpwardAccelerationRow"]=999.99
+        GPS["ForwaredAccelerationRowFilter"]=999.99
         for i in np.arange(len(GPS.Acceleration)):     
-            GPS["ForwaredAccelerationRow"].iloc[i]=GPS["ForwaredAcceleration"].iloc[i]=float(GPS.Acceleration.iloc[i] ['x'])
+            GPS["ForwaredAccelerationRowFilter"]=GPS["ForwaredAccelerationRow"].iloc[i]=GPS["ForwaredAcceleration"].iloc[i]=float(GPS.Acceleration.iloc[i] ['x'])
             GPS["LateralAccelerationRow"].iloc[i]=GPS["LateralAcceleration"].iloc[i]=float(GPS.Acceleration.iloc[i] ['y'])
             GPS["UpwardAccelerationRow"].iloc[i]=GPS["UpwardAcceleration"].iloc[i]=float(GPS.Acceleration.iloc[i] ['z'])
         
         # The filtered acceleration while later be used to identify kinematic events
-        GPS["ForwaredAcceleration"]=filter_acceleration(GPS["ForwaredAcceleration"])
-        GPS["LateralAcceleration"]=filter_acceleration(GPS["LateralAcceleration"])
-        GPS["UpwardAcceleration"]=filter_acceleration(GPS["UpwardAcceleration"])
+        # GPS["ForwaredAcceleration"]=filter_acceleration(GPS["ForwaredAcceleration"])
+        # GPS["LateralAcceleration"]=filter_acceleration(GPS["LateralAcceleration"])
+        # GPS["UpwardAcceleration"]=filter_acceleration(GPS["UpwardAcceleration"])
         
         GPS=GPS.reset_index()
         GPS["RealTime"] = " "
@@ -140,15 +141,32 @@ def tidy_engine(path):
             ### Sometimes have raws with the same frame ID. Take only the first one
             CarTelemetries = CarTelemetries.sort_values('FrameID').drop_duplicates('FrameID', keep='first')  
             CarTelemetries = CarTelemetries.reset_index(drop=True)
-            
+            CarTelemetries["Gear"] = CarTelemetries["Gear"].ffill().astype(np.int64)
             CarTelemetries.Acceleration=pd.to_numeric(CarTelemetries.Acceleration)
             CarTelemetries["Longitudinal_Acceleration"]=pd.to_numeric(CarTelemetries.Acceleration)
             thisFilter = CarTelemetries.filter(['Type', 'WorldTime', 'FrameID', 'Speed','Acceleration'])
             CarTelemetries=CarTelemetries.drop(thisFilter, axis=1,errors='ignore')
-
+           
             df_wide = pd.merge(GPS, CarTelemetries, on='SimulationTime', how='outer')
+           
         else:
             df_wide=GPS
+        
+        if "Gear" in df_wide.columns:
+            df_wide["Gear"] = df_wide["Gear"].ffill().astype(np.int64)
+        # The filtered acceleration while later be used to identify kinematic events
+        if ("Gear" in df_wide.columns and sum(df_wide["Gear"])>0):              
+               GearChangeFrames=df_wide.loc[df_wide.Gear.diff().isin([-2,-1]),'FrameID']
+               for f in GearChangeFrames: 
+                   df_wide.loc[(df_wide.FrameID>=f) & (df_wide.FrameID<=f+50),"ForwaredAccelerationRowFilter"]=np.NAN        
+               df_wide["ForwaredAccelerationRowFilter"]=df_wide["ForwaredAccelerationRowFilter"].interpolate(method='linear')
+   
+        
+        df_wide["ForwaredAcceleration"]=filter_acceleration(df_wide["ForwaredAccelerationRowFilter"])
+        df_wide["LateralAcceleration"]=filter_acceleration(df_wide["LateralAcceleration"])
+        df_wide["UpwardAcceleration"]=filter_acceleration(df_wide["UpwardAcceleration"])
+        
+        
 ### Termination
         Termination=df[df.Type=='Termination']
         if len(Termination)>0:
