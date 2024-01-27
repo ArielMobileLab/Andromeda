@@ -162,7 +162,7 @@ def tidy_engine(path):
                df_wide["ForwaredAccelerationFilter"]=df_wide["ForwaredAccelerationFilter"].interpolate(method='linear')
    
         
-        df_wide["ForwaredAcceleration"]=filter_acceleration(df_wide["ForwaredAccelerationRowFilter"])
+        df_wide["ForwaredAcceleration"]=filter_acceleration(df_wide["ForwaredAccelerationFilter"])
         df_wide["LateralAcceleration"]=filter_acceleration(df_wide["LateralAcceleration"])
         df_wide["UpwardAcceleration"]=filter_acceleration(df_wide["UpwardAcceleration"])
         
