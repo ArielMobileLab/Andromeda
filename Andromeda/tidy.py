@@ -153,7 +153,7 @@ def tidy_engine(path):
             df_wide=GPS
         
         if "Gear" in df_wide.columns:
-            df_wide["Gear"] = df_wide["Gear"].ffill().astype(np.int64)
+            df_wide["Gear"] = df_wide["Gear"].ffill().fillna(0).astype(np.int64)
         # The filtered acceleration while later be used to identify kinematic events
         if ("Gear" in df_wide.columns and sum(df_wide["Gear"])>0):              
                GearChangeFrames=df_wide.loc[df_wide.Gear.diff().isin([-2,-1]),'FrameID']
