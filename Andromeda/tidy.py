@@ -137,13 +137,15 @@ def tidy_engine(path):
         if (sum(df.Type=='CarTelemetries')):
             CarTelemetries=df[df.Type=='CarTelemetries']
             CarTelemetries=CarTelemetries.dropna(axis=1, how='all')
+            ### Sometimes have raws with the same frame ID. Take only the first one
+            CarTelemetries = CarTelemetries.sort_values('FrameID').drop_duplicates('FrameID', keep='first')  
+            CarTelemetries = CarTelemetries.reset_index(drop=True)
+            
             CarTelemetries.Acceleration=pd.to_numeric(CarTelemetries.Acceleration)
             CarTelemetries["Longitudinal_Acceleration"]=pd.to_numeric(CarTelemetries.Acceleration)
             thisFilter = CarTelemetries.filter(['Type', 'WorldTime', 'FrameID', 'Speed','Acceleration'])
             CarTelemetries=CarTelemetries.drop(thisFilter, axis=1,errors='ignore')
-            ### Sometimes have raws with the same frame ID. Take only the first one
-            CarTelemetries = CarTelemetries.sort_values('FrameID').drop_duplicates('FrameID', keep='first')  
-            CarTelemetries = CarTelemetries.reset_index(drop=True)
+
             df_wide = pd.merge(GPS, CarTelemetries, on='SimulationTime', how='outer')
         else:
             df_wide=GPS
