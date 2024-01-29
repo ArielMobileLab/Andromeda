@@ -5,6 +5,7 @@ import statistics
 from datetime import datetime
 import matplotlib.pyplot as plt
 import itertools
+import scipy as sp
 
 ## ---------------------------------------------------------------------------
 def filter_acceleration(x):
@@ -155,7 +156,8 @@ def tidy_engine(path):
         if "Gear" in df_wide.columns:
             df_wide["Gear"] = df_wide["Gear"].ffill().fillna(0).astype(np.int64)
         # The filtered acceleration while later be used to identify kinematic events
-        if ("Gear" in df_wide.columns and sum(df_wide["Gear"])>0):              
+        if ("Gear" in df_wide.columns and sum(df_wide["Gear"])>0):  
+               df_wide["ForwaredAccelerationFilter"]=sp.signal.medfilt(df_wide["ForwaredAccelerationFilter"],7)
                GearChangeFrames=df_wide.loc[df_wide.Gear.diff().isin([-2,-1]),'FrameID']
                for f in GearChangeFrames: 
                    df_wide.loc[(df_wide.FrameID>=f) & (df_wide.FrameID<=f+50),"ForwaredAccelerationFilter"]=np.NAN        
