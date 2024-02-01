@@ -31,8 +31,7 @@ def distanceHaversinePoints(p1_lat,p1_lng,p2_lat,p2_lng):
     loc1=(p1_lat,p1_lng)
     loc2=(p2_lat,p2_lng)
     return hs.haversine(loc1,loc2,unit='m')
-    
-            
+                
 def distanceHaversineVectors(p1_lat,p1_lng,p2_lat,p2_lng):
     distance=[]
     for i in np.arange(len(p1_lat)):
@@ -40,7 +39,6 @@ def distanceHaversineVectors(p1_lat,p1_lng,p2_lat,p2_lng):
         distance.append(dis)
     return distance
 
-   
 def tidy_cognata(path):
     df=pd.read_json(path)
     df = (pd.DataFrame(df['Logs'].values.tolist()).join(df.drop('Logs', 1)))
@@ -193,7 +191,6 @@ def tidy_engine(path):
         return None
     return df_wide
     
-
 def tidy_gps(path):  # load json to gsp df
     try:
         df = pd.read_json(path)   
@@ -365,6 +362,21 @@ def tidy_carla(path):
     except:
         return None
     return df
+
+def tidy_feedback(path):
+    #path=r'H:\My Drive\Ariel Uni\B1_582444\Simulation\5.AVATAR\Color\Face_StatusColor_2024-01-22_14-59-52.json'
+    try:
+        #path=r"G:\My Drive\Ariel Uni\A1_012594\Simulator\4.Latency\Latency3\7081(11 20 29)-CognataEngineLog (9).JSON"
+        df=pd.read_json(path, lines=True)
+        # df = (pd.DataFrame(df['Logs'].values.tolist()).join(df.drop('Logs', 1)))
+        # df=pd.DataFrame.from_dict(df, orient='columns')
+        df = df.rename(columns={"Reson": "Reason"})
+        df = df.rename(columns={"Simulation_time": "SimulationTime"})
+        df["WorldTime"]=df["Timestamp"].astype(str).str.slice(11,19)
+    except:
+        return None
+    return df
+
 # =============================================================================
 # Internals
 # =============================================================================
