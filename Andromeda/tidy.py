@@ -366,13 +366,17 @@ def tidy_carla(path):
 def tidy_feedback(path):
     #path=r'H:\My Drive\Ariel Uni\B1_582444\Simulation\5.AVATAR\Color\Face_StatusColor_2024-01-22_14-59-52.json'
     try:
-        #path=r"G:\My Drive\Ariel Uni\A1_012594\Simulator\4.Latency\Latency3\7081(11 20 29)-CognataEngineLog (9).JSON"
         df=pd.read_json(path, lines=True)
         # df = (pd.DataFrame(df['Logs'].values.tolist()).join(df.drop('Logs', 1)))
         # df=pd.DataFrame.from_dict(df, orient='columns')
-        df = df.rename(columns={"Reson": "Reason"})
         df = df.rename(columns={"Simulation_time": "SimulationTime"})
         df["WorldTime"]=df["Timestamp"].astype(str).str.slice(11,19)
+        
+        df.loc[df['Type']=="Face_Status:",'Type']='Face_Status'
+        df=df.rename(columns={"Face_State":"Event_ID"})
+        df['Event_Name']=None
+        df.loc[df.Event_ID==2,'Event_Name']='PositiveFeedback'
+        df.loc[df.Event_ID==3,'Event_Name']='NegativeFeedback'   
     except:
         return None
     return df
