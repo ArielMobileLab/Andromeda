@@ -5,7 +5,7 @@ import statistics
 from datetime import datetime
 import matplotlib.pyplot as plt
 import itertools
-import scipy as sp
+import scipy.signal as sp
 
 ## ---------------------------------------------------------------------------
 def filter_acceleration(x):
@@ -81,7 +81,7 @@ def tidy_cognata(path):
          
 def tidy_engine(path):
     try:
-        #path=r'H:\My Drive\Ariel Uni\B6_587175\Simulation\5.AVATAR\Familiar_Face\EgoCar_Face_Familiar_2024-01-25_14-44-57.json'
+        #path=r'H:\\My Drive\\Ariel Uni\\B1_582444\\Simulation\\5.AVATAR\\Color\\EgoCar_Color_2024-01-22_14-59-52.json'
       
         df=pd.read_json(path)
         df = (pd.DataFrame(df['Logs'].values.tolist()).join(df.drop('Logs', 1)))
@@ -155,13 +155,12 @@ def tidy_engine(path):
             df_wide["Gear"] = df_wide["Gear"].ffill().fillna(0).astype(np.int64)
         # The filtered acceleration while later be used to identify kinematic events
         if ("Gear" in df_wide.columns and sum(df_wide["Gear"])>0):  
-               df_wide["ForwaredAccelerationFilter"]=sp.signal.medfilt(df_wide["ForwaredAccelerationFilter"],7)
+               df_wide["ForwaredAccelerationFilter"]=sp.medfilt(df_wide["ForwaredAccelerationFilter"],7)
                GearChangeFrames=df_wide.loc[df_wide.Gear.diff().isin([-2,-1]),'FrameID']
                for f in GearChangeFrames: 
                    df_wide.loc[(df_wide.FrameID>=f) & (df_wide.FrameID<=f+50),"ForwaredAccelerationFilter"]=np.NAN        
                df_wide["ForwaredAccelerationFilter"]=df_wide["ForwaredAccelerationFilter"].interpolate(method='linear')
    
-        
         df_wide["ForwaredAcceleration"]=filter_acceleration(df_wide["ForwaredAccelerationFilter"])
         df_wide["LateralAcceleration"]=filter_acceleration(df_wide["LateralAcceleration"])
         df_wide["UpwardAcceleration"]=filter_acceleration(df_wide["UpwardAcceleration"])
