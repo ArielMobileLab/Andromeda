@@ -84,8 +84,9 @@ def tidy_engine(path):
         #path=r'H:\\My Drive\\Ariel Uni\\B1_582444\\Simulation\\5.AVATAR\\Color\\EgoCar_Color_2024-01-22_14-59-52.json'
       
         df=pd.read_json(path)
-        df = (pd.DataFrame(df['Logs'].values.tolist()).join(df.drop('Logs', 1)))
-        df=pd.DataFrame.from_dict(df, orient='columns')
+        df=pd.json_normalize(df['Logs'])
+
+
        
 ### GPS messages
         GPS=df[df.Type=='GPS']
