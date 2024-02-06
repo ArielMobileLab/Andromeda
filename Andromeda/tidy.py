@@ -99,10 +99,11 @@ def tidy_engine(path):
         GPS["LateralAccelerationRow"]=999.99
         GPS["UpwardAccelerationRow"]=999.99
         GPS["ForwaredAccelerationFilter"]=999.99
-        for i in np.arange(len(GPS.Acceleration)):     
-            GPS["ForwaredAccelerationFilter"].iloc[i]=GPS["ForwaredAccelerationRow"].iloc[i]=GPS["ForwaredAcceleration"].iloc[i]=float(GPS.Acceleration.iloc[i] ['x'])
-            GPS["LateralAccelerationRow"].iloc[i]=GPS["LateralAcceleration"].iloc[i]=float(GPS.Acceleration.iloc[i] ['y'])
-            GPS["UpwardAccelerationRow"].iloc[i]=GPS["UpwardAcceleration"].iloc[i]=float(GPS.Acceleration.iloc[i] ['z'])
+        for i in np.arange(len(GPS["Acceleration.y"])):     
+            GPS["ForwaredAccelerationFilter"].iloc[i]=GPS["ForwaredAccelerationRow"].iloc[i]=GPS["ForwaredAcceleration"].iloc[i]=float(GPS["Acceleration.x"].iloc[i])
+            GPS["LateralAccelerationRow"].iloc[i]=GPS["LateralAcceleration"].iloc[i]=float(GPS["Acceleration.y"].iloc[i])
+            GPS["UpwardAccelerationRow"].iloc[i]=GPS["UpwardAcceleration"].iloc[i]=float(GPS["Acceleration.z"].iloc[i])
+     
         
         # The filtered acceleration while later be used to identify kinematic events
         # GPS["ForwaredAcceleration"]=filter_acceleration(GPS["ForwaredAcceleration"])
@@ -194,18 +195,17 @@ def tidy_engine(path):
     
 def tidy_gps(path):  # load json to gsp df
     try:
-        df = pd.read_json(path)   
-        df = pd.DataFrame(df['Logs'].values.tolist()).join(df.drop('Logs', 1))
-        df = pd.DataFrame.from_dict(df, orient='columns')
+        df=pd.read_json(path)
+        df=pd.json_normalize(df['Logs'])
         df = df[df['Name'].isin(['Lead Vehicle', 'lead car','carinfront'])].reset_index()     
         
         df["ForwaredAcceleration"]=999.99
         df["LateralAcceleration"]=999.99
         df["UpwardAcceleration"]=999.99
-        for i in np.arange(len(df.Acceleration)):     
-           df["ForwaredAcceleration"].iloc[i]=float(df.Acceleration.iloc[i] ['x'])
-           df["LateralAcceleration"].iloc[i]=float(df.Acceleration.iloc[i] ['y'])
-           df["UpwardAcceleration"].iloc[i]=float(df.Acceleration.iloc[i] ['z'])
+        for i in np.arange(len(df["Acceleration.y"])):     
+           df["ForwaredAcceleration"].iloc[i]=float(df["Acceleration.x"].iloc[i])
+           df["LateralAcceleration"].iloc[i]=float(df["Acceleration.y"].iloc[i])
+           df["UpwardAcceleration"].iloc[i]=float(df["Acceleration.z"].iloc[i])
        
        # The filtered acceleration while later be used to identify kinematic events
         df["ForwaredAcceleration"]=filter_acceleration(df["ForwaredAcceleration"])
@@ -238,7 +238,7 @@ def tidy_gps(path):  # load json to gsp df
         Begining=pd.DataFrame({
             'SimulationTime':   [min(df['SimulationTime'])], 
             'Reason'        :   ['Start Simulation']})
-        Termination=Termination.append(Begining)
+        Termination=pd.concat([Termination,Begining])
 
 ### miscellaneous 
      #   df['Distance_Driven']=None    ## currently we don't need the Distance_Driven the columns is added for
