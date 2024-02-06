@@ -356,7 +356,7 @@ def tidy_carla(path):
         Begining=pd.DataFrame({
             'SimulationTime':   [min(GPS['SimulationTime'])], 
             'Reason'        :   ['Start']})
-        Termination=Termination.append(Begining)
+        Termination=pd.concat([Termination,Begining])
         
 ### Merge outer join
         df = pd.merge(GPS, Termination, on='SimulationTime', how='outer')
