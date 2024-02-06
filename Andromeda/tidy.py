@@ -170,6 +170,7 @@ def tidy_engine(path):
         Termination=df[df.Type=='Termination']
         if len(Termination)>0:
              Termination=Termination[['SimulationTime','Reason']]
+             Termination['Reason']=Termination['Reason'].Replace("Crash","collided");
             #Termination=Termination.drop(['Type', 'WorldTime', 'FrameID','Speed','Distance_Driven'], axis=1)
         else:
             Termination=pd.DataFrame({
