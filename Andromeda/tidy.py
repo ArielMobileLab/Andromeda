@@ -16,6 +16,12 @@ def filter_acceleration(x):
     x=x-statistics.median(x)
     return x
 
+def filter_real_time_acceleration(x):
+    high_pass_window=600
+    x=x.rolling(window=7,center=True,min_periods=1).median() ## highpass 
+    x=x.rolling(window=20,center=True,min_periods=1).mean()
+    return x
+
 def Distance_Driven_haversine(Latitude,Longitude,):
     n=len(Latitude)
     Distance_Driven = [0] * n
@@ -85,6 +91,7 @@ def tidy_engine(path):
       
         df=pd.read_json(path)
         df=pd.json_normalize(df['Logs'])
+        
 
 
        
@@ -104,12 +111,7 @@ def tidy_engine(path):
             GPS["LateralAccelerationRow"].iloc[i]=GPS["LateralAcceleration"].iloc[i]=float(GPS["Acceleration.y"].iloc[i])
             GPS["UpwardAccelerationRow"].iloc[i]=GPS["UpwardAcceleration"].iloc[i]=float(GPS["Acceleration.z"].iloc[i])
      
-        
-        # The filtered acceleration while later be used to identify kinematic events
-        # GPS["ForwaredAcceleration"]=filter_acceleration(GPS["ForwaredAcceleration"])
-        # GPS["LateralAcceleration"]=filter_acceleration(GPS["LateralAcceleration"])
-        # GPS["UpwardAcceleration"]=filter_acceleration(GPS["UpwardAcceleration"])
-        
+            
         GPS=GPS.reset_index()
         GPS["RealTime"] = " "
         GPS["Distance_Driven"]=Distance_Driven_haversine(GPS['Latitude'],GPS['Longitude'])
@@ -134,6 +136,7 @@ def tidy_engine(path):
         GPS['CumulativeSpeed']=np.cumsum(GPS.Speed)
         GPS['CumulativeSpeedPWR2']=np.cumsum(GPS.Speed**2)
         GPS['Samples']=np.arange(len(GPS))+1
+        
 
 ### CarTelemetries messages
         if (sum(df.Type=='CarTelemetries')):
@@ -166,6 +169,8 @@ def tidy_engine(path):
         df_wide["ForwaredAcceleration"]=filter_acceleration(df_wide["ForwaredAccelerationFilter"])
         df_wide["LateralAcceleration"]=filter_acceleration(df_wide["LateralAcceleration"])
         df_wide["UpwardAcceleration"]=filter_acceleration(df_wide["UpwardAcceleration"])
+
+        df_wide["ForwaredAccelerationCarla"]=filter_real_time_acceleration(df_wide["ForwaredAccelerationRow"])
         
         
 ### Termination
