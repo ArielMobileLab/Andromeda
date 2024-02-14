@@ -260,7 +260,6 @@ def tidy_gps(path):  # load json to gsp df
     
 def tidy_carla_objects(path): 
     try:
-        path=gps_file
         df=pd.read_json(path)
         df=pd.json_normalize(df['Logs'])
         df=df.rename(columns={"longitude": "Longitude", "latitude": "Latitude", "altitude": "Altitude"})
