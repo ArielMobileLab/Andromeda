@@ -257,7 +257,67 @@ def tidy_gps(path):  # load json to gsp df
     except:
         return None
     return df
+    
+def tidy_carla_objects(path): 
+    try:
+        path=gps_file
+        df=pd.read_json(path)
+        df=pd.json_normalize(df['Logs'])
+        df=df.rename(columns={"longitude": "Longitude", "latitude": "Latitude", "altitude": "Altitude"})
+        df=df[df['Name'].notnull()]
+        df = df[df['Name'].str.contains("vehicle.tesla.model3")]
+        df=df.sort_values(by=['Name','SimulationTime'])
+       
+        df=df.reset_index()
+        df["RealTime"] = " "
+        df["Distance_Driven"]=Distance_Driven_haversine(np.float64(df['Latitude']),np.float64(df['Longitude']))
+        for V in df.Name.unique():
+            min_distance=min(df.loc[df.Name==V,"Distance_Driven"])
+            df.loc[df.Name==V,"Distance_Driven"]=df.loc[df.Name==V,"Distance_Driven"]-min_distance
+        df[['Name','Distance_Driven']].groupby(['Name']).max() 
+        fixedTime = df.WorldTime[0]
+        fixedTime2 = fixedTime[0:15]
+        fixedTime3 = datetime.strptime(fixedTime2, "%H:%M:%S.%f")
+        for x in df.index:
+            currentTime = df.WorldTime[x]
+            currentTime2 = currentTime[0:15]
+            currentTime3 = datetime.strptime(currentTime2, "%H:%M:%S.%f")
 
+            delta = currentTime3 - fixedTime3
+            deltasec = delta.total_seconds()
+            df.RealTime[x] = deltasec
+        
+        for V in df.Name.unique():
+            min_RealTime=min(df.loc[df.Name==V,"RealTime"])
+            df.loc[df.Name==V,"RealTime"]=df.loc[df.Name==V,"RealTime"]-min_RealTime
+           
+            
+        df = df[['SimulationTime', 'Latitude', 'Longitude','RealTime','WorldTime','Speed','Name','Distance_Driven']] 
+        
+        ### Termination
+        Termination=pd.DataFrame({
+            'SimulationTime':   [max(df['SimulationTime'])], 
+            'Reason'        :   ['No termination data']})
+
+### Begining
+        Begining=pd.DataFrame({
+            'SimulationTime':   [min(df['SimulationTime'])], 
+            'Reason'        :   ['Start Simulation']})
+        Termination=pd.concat([Termination,Begining])
+
+### miscellaneous 
+     #   df['Distance_Driven']=None    ## currently we don't need the Distance_Driven the columns is added for
+        df['CumulativeSpeed']=None    ## currently we don't need the Distance_Driven the columns is added for
+        df['Samples']=None    ## currently we don't need the Distance_Driven the columns is added for
+        df['CumulativeSpeedPWR2']=None    ## currently we don't need the Distance_Driven the columns is added for
+        df['CumulativeDistanceToLead']=None    ## currently we don't need the Distance_Driven the columns is added for
+        df['CumulativeDistanceToLeadPWR2']=None 
+        df = pd.merge(df, Termination, on='SimulationTime', how='outer')
+
+    except:
+        return None
+    return df
+    
 def tidy_teleoperation(path):
     df = pd.read_excel(path)
     if (len(df)>0):
