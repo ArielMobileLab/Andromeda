@@ -145,7 +145,9 @@ def tidy_engine(path):
             ### Sometimes have raws with the same frame ID. Take only the first one
             CarTelemetries = CarTelemetries.sort_values('FrameID').drop_duplicates('FrameID', keep='first')  
             CarTelemetries = CarTelemetries.reset_index(drop=True)
-            CarTelemetries["Gear"] = CarTelemetries["Gear"].ffill().astype(np.int64)
+            if "Gear" in CarTelemetries:
+                CarTelemetries["Gear"] = CarTelemetries["Gear"].ffill().astype(np.int64)
+          
             CarTelemetries.Acceleration=pd.to_numeric(CarTelemetries.Acceleration)
             CarTelemetries["Longitudinal_Acceleration"]=pd.to_numeric(CarTelemetries.Acceleration)
             thisFilter = CarTelemetries.filter(['Type', 'WorldTime', 'FrameID', 'Speed','Acceleration'])
