@@ -369,7 +369,8 @@ def tidy_teleoperation(path):
         Begining=pd.DataFrame({
             'SimulationTime':   [min(df['SimulationTime'])], 
             'Reason'        :   ['Start Simulation']})
-        Termination=Termination.append(Begining)
+        Termination=pd.concat([Termination,Begining])
+
 ### miscellaneous 
         df['CumulativeDistanceToLead']=None    ## currently we don't need the Distance_Driven the columns is added for
         df['CumulativeDistanceToLeadPWR2']=None 
