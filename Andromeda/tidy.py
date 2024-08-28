@@ -2,7 +2,7 @@ import pandas as pd
 import haversine as hs
 import numpy as np
 import statistics
-from datetime import datetime
+from datetime import datetime, timedelta
 import matplotlib.pyplot as plt
 import itertools
 import scipy.signal as sp
@@ -348,17 +348,19 @@ def tidy_teleoperation(path):
         df['SimulationTime']= df['measurement_time'] ##For allignment with cognata files
         df['RealTime']= df['measurement_time'] ##For allignment with cognata files
         ##For allignment with cognata files
-        # df_time = pd.DataFrame({
-        #     'year': list(itertools.repeat(2021, len(df))),
-        #     'month':list(itertools.repeat(1, len(df))),
-        #     'day': list(itertools.repeat(1, len(df))),
-        #     'hour': df['Time-H'],
-        #     'minute': df['Time-M'],
-        #     'second': np.floor(df['Time-S']),
-        #     'ms': (df['Time-S']-np.floor(df['Time-S']))*1000})
+        if 'Time-H' in df.columns:
+            df_time = pd.DataFrame({
+                'year': list(itertools.repeat(2021, len(df))),
+                'month':list(itertools.repeat(1, len(df))),
+                'day': list(itertools.repeat(1, len(df))),
+                'hour': df['Time-H'],
+                'minute': df['Time-M'],
+                'second': np.floor(df['Time-S']),
+                'ms': (df['Time-S']-np.floor(df['Time-S']))*1000})
 
-        # df['WorldTime']= pd.to_datetime(df_time)
-        
+            df['WorldTime']= pd.to_datetime(df_time)
+        if 'GPS.Time' in df.columns: ### Check with Alex if this conversion is correct
+            df['WorldTime']=datetime(2018, 1, 22) + timedelta(seconds= df['GPS.Time']+5*60*60)
 
                 ### Termination
         Termination=pd.DataFrame({
