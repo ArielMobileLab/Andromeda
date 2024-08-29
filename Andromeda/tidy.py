@@ -360,8 +360,7 @@ def tidy_teleoperation(path):
 
             df['WorldTime']= pd.to_datetime(df_time)
         if 'GPS.Time' in df.columns: ### Check with Alex if this conversion is correct
-            df['WorldTime']=datetime(2018, 1, 22) + timedelta(seconds= df['GPS.Time']+5*60*60)
-
+             df['WorldTime']=datetime(2024, 7, 22) + pd.TimedeltaIndex(df['GPS.Time']*0.0007+4*60*60,unit='s')
                 ### Termination
         Termination=pd.DataFrame({
             'SimulationTime':   [max(df['SimulationTime'])], 
